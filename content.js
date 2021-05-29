@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 	clicker.click();
 
 	element[0].addEventListener('DOMSubtreeModified', handleChange);
-
+	let leftList = new Set();
 	localStorage.clear();
 
 	let prevCount = 0;
@@ -17,33 +17,44 @@ chrome.runtime.onMessage.addListener((request)=>{
 	    console.log(element[0].innerHTML);
 	    currentCount = Number(element[0].innerHTML);
 	    let howManyLeft = prevCount - currentCount;
+	    let howManyJoined = currentCount - prevCount;
 	    const nameList = document.getElementsByClassName('ZjFb7c');
-	    if(currentCount > prevCount) setTimeout(() => { handleJoin(nameList) }, 100);
+	    if(currentCount > prevCount) 
+	    	setTimeout(() => { handleJoin(nameList, howManyJoined) }, 100);
 	    else setTimeout(() => { handleLeave(nameList, howManyLeft) }, 100); 
 	    prevCount = currentCount;
 	}
 	
 	/*Handle when someone joins the meeting*/
-	function handleJoin(nameList) {
-		let JSONvalue = "";
-		Array.from(nameList).forEach((name) => {
-			let key = getKey(name.innerHTML);
-			console.log(`${key}`);
-			let value = localStorage.getItem(key); 
-			if(value === null) {
-				//Means the person newly joined the meeting
-				value = insertNewRecord();
+	function handleJoin(nameList, howManyJoined) {
+		console.log("howManyJoined", howManyJoined);
+		let found = false;
+		for(let i = 0;i < nameList.length && howManyJoined;i++) {
+			let key = nameList[i].innerHTML;
+			for(let j = 0;j < localStorage.length;j++) {
+				
+				if(getKey(key) == localStorage.key(j)) {
+					found = true;
+					break;
+				}
 			}
-
-			else {
-				//logical error
-				//Means the person once left and now joining again
-				value = JSON.parse(value);
+			if(!found) {
+				howManyJoined--;
+				let value = insertNewRecord();
+				localStorage.setItem(key, value);
+			}
+			found = false;
+		}
+		console.log("Set : ", leftList);
+		Array.from(leftList).forEach((key) => {
+			let value = localStorage.getItem(key);
+			value = JSON.parse(value);
+			let lastIdx = value.length - 1;
+			if(value[lastIdx].left != null) {
 				value.push(getData());
 				value = JSON.stringify(value);
-			} 
-			console.log(JSONvalue);
-			localStorage.setItem(key, value);
+				localStorage.setItem(key, value);
+			}
 		});
 
 	}
@@ -63,6 +74,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 				howManyLeft--;
 				console.log("updating: ", key);
 				UpdateLocalStorage(key);
+				leftList.add(key);
 			}
 			found = false;
 
