@@ -16,11 +16,11 @@ chrome.runtime.onMessage.addListener((request)=>{
 		clicker.click();
 	    console.log(element[0].innerHTML);
 	    currentCount = Number(element[0].innerHTML);
+	    let howManyLeft = prevCount - currentCount;
 	    const nameList = document.getElementsByClassName('ZjFb7c');
 	    if(currentCount > prevCount) setTimeout(() => { handleJoin(nameList) }, 100);
-	    else setTimeout(() => { handleLeave(nameList) }, 100); 
+	    else setTimeout(() => { handleLeave(nameList, howManyLeft) }, 100); 
 	    prevCount = currentCount;
-	    
 	}
 	
 	/*Handle when someone joins the meeting*/
@@ -36,6 +36,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 			}
 
 			else {
+				//logical error
 				//Means the person once left and now joining again
 				value = JSON.parse(value);
 				value.push(getData());
@@ -46,22 +47,25 @@ chrome.runtime.onMessage.addListener((request)=>{
 		});
 
 	}
-//need to change this function
-	function handleLeave(nameList) {
-		let i;
-		for(i = 0;i < nameList.length;i++) {
-			let prevKey = localStorage.key(i);
-			let currentKey = nameList[i].innerHTML;
-			if(prevKey != nameList) {
-				//Means this person left 
-				UpdateLocalStorage(prevKey);
-			}
-
-		}
-
-		while(i < localStorage.length) {
+/*Handles the event when someone leaves the meeting*/
+	function handleLeave(nameList, howManyLeft) {
+		let found = false;
+		console.log("howManyLeft", howManyLeft);
+		for(let i = 0;i < localStorage.length && howManyLeft;i++) {
 			let key = localStorage.key(i);
-			UpdateLocalStorage(key);
+			for(let j = 0;j < nameList.length;j++) {
+				if(key == getKey(nameList[j].innerHTML)) {
+					found = true;
+					break;
+				}
+			}
+			if(!found) {
+				howManyLeft--;
+				console.log("updating: ", key);
+				UpdateLocalStorage(key);
+			}
+			found = false;
+
 		}
 
 	}
@@ -69,9 +73,12 @@ chrome.runtime.onMessage.addListener((request)=>{
 	function UpdateLocalStorage(key) {
 		let value = localStorage.getItem(key);
 		value = JSON.parse(value);
+		console.log("value :", value);
 		let lastIdx = value.length - 1;
+		console.log("lastIdx: ", lastIdx);
 		value[lastIdx].left = Date.now();
-		localStorage.setItem(key, value);
+		let JSONvalue = JSON.stringify(value);
+		localStorage.setItem(key, JSONvalue);
 	}
 
 	/*Returns the necessory details when someone newly joins the meeting*/
@@ -93,5 +100,5 @@ chrome.runtime.onMessage.addListener((request)=>{
 	function getData() {
 		return {"joined" : Date.now(), "left" : null};
 	}
-
+	
 })
