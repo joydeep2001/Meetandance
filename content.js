@@ -28,34 +28,17 @@ chrome.runtime.onMessage.addListener((request)=>{
 	/*Handle when someone joins the meeting*/
 	function handleJoin(nameList, howManyJoined) {
 		console.log("howManyJoined", howManyJoined);
-		let found = false;
-		for(let i = 0;i < nameList.length && howManyJoined;i++) {
-			let key = nameList[i].innerHTML;
-			for(let j = 0;j < localStorage.length;j++) {
-				
-				if(getKey(key) == localStorage.key(j)) {
-					found = true;
-					break;
-				}
-			}
-			if(!found) {
-				howManyJoined--;
-				let value = insertNewRecord();
-				localStorage.setItem(key, value);
-			}
-			found = false;
-		}
+		let newlyJoined = updateNewJoins(nameList, howManyJoined);
+		let numberOfRejoins = howManyJoined - newlyJoined;
+
 		console.log("Set : ", leftList);
-		Array.from(leftList).forEach((key) => {
-			let value = localStorage.getItem(key);
-			value = JSON.parse(value);
-			let lastIdx = value.length - 1;
-			if(value[lastIdx].left != null) {
-				value.push(getData());
-				value = JSON.stringify(value);
-				localStorage.setItem(key, value);
-			}
-		});
+
+		if(numberOfRejoins > 0) {
+			updateRejoins(numberOfRejoins)
+		}
+		
+		
+		
 
 	}
 /*Handles the event when someone leaves the meeting*/
@@ -81,6 +64,47 @@ chrome.runtime.onMessage.addListener((request)=>{
 		}
 
 	}
+
+	function updateRejoins(reJoins) {
+		for(let i = 0;i < leftList.length && reJoins;i++) {
+			let key = localStorage.key(i);
+			let value = localStorage.getItem(key);
+			value = JSON.parse(value);
+			let lastIdx = value.length - 1;
+			if(value[lastIdx].left != null) {
+				reJoins--;
+				value.push(getData());
+				value = JSON.stringify(value);
+				localStorage.setItem(key, value);
+			}
+		}
+	
+	}
+
+	function updateNewJoins(nameList, howManyJoined) {
+		let newJoinCount = 0;
+		for(let i = 0;i < nameList.length && newJoinCount < howManyJoined;i++) {
+			let found = false;
+			let key = getKey(nameList[i].innerHTML);
+			found = searchInLocalStorage(key);
+			if(!found) {
+				newJoinCount++;
+				let value = insertNewRecord();
+				localStorage.setItem(key, value);
+			}
+			found = false;
+		}
+
+		return newJoinCount;
+	}
+
+	function searchInLocalStorage(key) {
+		for(let j = 0;j < localStorage.length;j++) 
+			if(key == localStorage.key(j)) return true;
+			
+			return false;
+	}
+
 
 	function UpdateLocalStorage(key) {
 		let value = localStorage.getItem(key);
