@@ -36,33 +36,32 @@ chrome.runtime.onMessage.addListener((request)=>{
 		if(numberOfRejoins > 0) {
 			updateRejoins(numberOfRejoins)
 		}
-		
-		
-		
 
 	}
 /*Handles the event when someone leaves the meeting*/
 	function handleLeave(nameList, howManyLeft) {
-		let found = false;
 		console.log("howManyLeft", howManyLeft);
 		for(let i = 0;i < localStorage.length && howManyLeft;i++) {
 			let key = localStorage.key(i);
-			for(let j = 0;j < nameList.length;j++) {
-				if(key == getKey(nameList[j].innerHTML)) {
-					found = true;
-					break;
-				}
-			}
+			let found = searchInHTMLCollection(key, nameList);
 			if(!found) {
 				howManyLeft--;
 				console.log("updating: ", key);
-				UpdateLocalStorage(key);
+				updateLeftPerson(key);
 				leftList.add(key);
 			}
 			found = false;
 
 		}
 
+	}
+
+	function searchInHTMLCollection(key, className) {
+		for(let j = 0;j < className.length;j++) {
+				let rawKey = className[j].innerHTML;
+				if(key == getKey(rawKey)) return true;
+			}
+			return false;
 	}
 
 	function updateRejoins(reJoins) {
@@ -101,12 +100,11 @@ chrome.runtime.onMessage.addListener((request)=>{
 	function searchInLocalStorage(key) {
 		for(let j = 0;j < localStorage.length;j++) 
 			if(key == localStorage.key(j)) return true;
-			
-			return false;
+		return false;
 	}
 
 
-	function UpdateLocalStorage(key) {
+	function updateLeftPerson(key) {
 		let value = localStorage.getItem(key);
 		value = JSON.parse(value);
 		console.log("value :", value);
