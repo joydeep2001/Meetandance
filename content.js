@@ -45,9 +45,9 @@ chrome.runtime.onMessage.addListener((request)=>{
 	function handleLeave(nameList, howManyLeft) {
 		let found = false;
 		console.log("howManyLeft", howManyLeft);
-<<<<<<< HEAD
 
-=======
+
+
 		for(let i = 0;i < localStorage.length && howManyLeft;i++) {
 			let key = localStorage.key(i);
 			let found = searchInHTMLCollection(key, nameList);
@@ -120,7 +120,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 		value[lastIdx].left = Date.now();
 		let JSONvalue = JSON.stringify(value);
 		localStorage.setItem(key, JSONvalue);
->>>>>>> parent of a303859... Modules added
+
 	}
 
 	/*Returns the necessory details when someone newly joins the meeting*/
@@ -138,13 +138,13 @@ chrome.runtime.onMessage.addListener((request)=>{
 		//do some processing
 		return key;
 	}
-
-<<<<<<< HEAD
-})
-=======
 	function getData() {
 		return {"joined" : Date.now(), "left" : null};
 	}
 	
+
 })
->>>>>>> parent of a303859... Modules added
+
+
+
+
