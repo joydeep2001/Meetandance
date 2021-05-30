@@ -36,12 +36,16 @@ chrome.runtime.onMessage.addListener((request)=>{
 		if(numberOfRejoins > 0) {
 			updateRejoins(numberOfRejoins)
 		}
+		
+		
+		
 
 	}
 	/*Handles the event when someone leaves the meeting*/
 	function handleLeave(nameList, howManyLeft) {
+		let found = false;
 		console.log("howManyLeft", howManyLeft);
-		updateLeaves(nameList, howManyLeft);
+
 	}
 
 
