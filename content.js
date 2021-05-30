@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 		}
 
 	}
-/*Handles the event when someone leaves the meeting*/
+	/*Handles the event when someone leaves the meeting*/
 	function handleLeave(nameList, howManyLeft) {
 		console.log("howManyLeft", howManyLeft);
 		for(let i = 0;i < localStorage.length && howManyLeft;i++) {
