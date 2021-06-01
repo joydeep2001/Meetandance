@@ -1,11 +1,13 @@
 // alert('its google meet');
-chrome.runtime.onMessage.addListener((request)=>{
+chrome.runtime.onMessage.addListener((request) => {
 	console.log(request);
-	const element = document.getElementsByClassName('wnPUne N0PJ8e');
-	const clicker = document.getElementsByClassName('uArJ5e UQuaGc kCyAyd QU4Gid foXzLb IeuGXd')[0];
+	const element = document.getElementsByClassName("wnPUne N0PJ8e");
+	const clicker = document.getElementsByClassName(
+		"uArJ5e UQuaGc kCyAyd QU4Gid foXzLb IeuGXd"
+	)[0];
 	clicker.click();
 
-	element[0].addEventListener('DOMSubtreeModified', handleChange);
+	element[0].addEventListener("DOMSubtreeModified", handleChange);
 	let leftList = new Set();
 	localStorage.clear();
 
@@ -14,17 +16,22 @@ chrome.runtime.onMessage.addListener((request)=>{
 	/*Handle the event when someone joins or lefts the meeting */
 	function handleChange(e) {
 		clicker.click();
-	    console.log(element[0].innerHTML);
-	    currentCount = Number(element[0].innerHTML);
-	    let howManyLeft = prevCount - currentCount;
-	    let howManyJoined = currentCount - prevCount;
-	    const nameList = document.getElementsByClassName('ZjFb7c');
-	    if(currentCount > prevCount) 
-	    	setTimeout(() => { handleJoin(nameList, howManyJoined) }, 100);
-	    else setTimeout(() => { handleLeave(nameList, howManyLeft) }, 100); 
-	    prevCount = currentCount;
+		console.log(element[0].innerHTML);
+		currentCount = Number(element[0].innerHTML);
+		let howManyLeft = prevCount - currentCount;
+		let howManyJoined = currentCount - prevCount;
+		const nameList = document.getElementsByClassName("ZjFb7c");
+		if (currentCount > prevCount)
+			setTimeout(() => {
+				handleJoin(nameList, howManyJoined);
+			}, 100);
+		else
+			setTimeout(() => {
+				handleLeave(nameList, howManyLeft);
+			}, 100);
+		prevCount = currentCount;
 	}
-	
+
 	/*Handle when someone joins the meeting*/
 	function handleJoin(nameList, howManyJoined) {
 		console.log("howManyJoined", howManyJoined);
@@ -33,49 +40,44 @@ chrome.runtime.onMessage.addListener((request)=>{
 
 		console.log("Set : ", leftList);
 
-		if(numberOfRejoins > 0) {
+		if (numberOfRejoins > 0) {
 			updateRejoins(numberOfRejoins);
 		}
-		
-		
-
 	}
-/*Handles the event when someone leaves the meeting*/
+	/*Handles the event when someone leaves the meeting*/
 	function handleLeave(nameList, howManyLeft) {
 		let found = false;
 		console.log("howManyLeft", howManyLeft);
 
-		for(let i = 0;i < localStorage.length && howManyLeft;i++) {
+		for (let i = 0; i < localStorage.length && howManyLeft; i++) {
 			let key = localStorage.key(i);
 			let found = searchInHTMLCollection(key, nameList);
-			if(!found) {
+			if (!found) {
 				howManyLeft--;
 				console.log("updating: ", key);
 				updateLeftPerson(key);
 				leftList.add(key);
 			}
 			found = false;
-
 		}
-
 	}
 
 	function searchInHTMLCollection(key, className) {
-		for(let j = 0;j < className.length;j++) {
-				let rawKey = className[j].innerHTML;
-				if(key == getKey(rawKey)) return true;
-			}
-			return false;
+		for (let j = 0; j < className.length; j++) {
+			let rawKey = className[j].innerHTML;
+			if (key == getKey(rawKey)) return true;
+		}
+		return false;
 	}
 
 	function updateRejoins(reJoins) {
 		console.log("Updating Rejoins");
-		for(let i = 0;i < leftList.length && reJoins;i++) {
+		for (let i = 0; i < leftList.length && reJoins; i++) {
 			let key = localStorage.key(i);
 			let value = localStorage.getItem(key);
 			value = JSON.parse(value);
 			let lastIdx = value.length - 1;
-			if(value[lastIdx].left != null) {
+			if (value[lastIdx].left != null) {
 				reJoins--;
 				value.push(getData());
 				value = JSON.stringify(value);
@@ -83,16 +85,19 @@ chrome.runtime.onMessage.addListener((request)=>{
 				localStorage.setItem(key, value);
 			}
 		}
-	
 	}
 
 	function updateNewJoins(nameList, howManyJoined) {
 		let newJoinCount = 0;
-		for(let i = 0;i < nameList.length && newJoinCount < howManyJoined;i++) {
+		for (
+			let i = 0;
+			i < nameList.length && newJoinCount < howManyJoined;
+			i++
+		) {
 			let found = false;
 			let key = getKey(nameList[i].innerHTML);
 			found = searchInLocalStorage(key);
-			if(!found) {
+			if (!found) {
 				newJoinCount++;
 				let value = insertNewRecord();
 				localStorage.setItem(key, value);
@@ -104,11 +109,10 @@ chrome.runtime.onMessage.addListener((request)=>{
 	}
 
 	function searchInLocalStorage(key) {
-		for(let j = 0;j < localStorage.length;j++) 
-			if(key == localStorage.key(j)) return true;
+		for (let j = 0; j < localStorage.length; j++)
+			if (key == localStorage.key(j)) return true;
 		return false;
 	}
-
 
 	function updateLeftPerson(key) {
 		let value = localStorage.getItem(key);
@@ -119,7 +123,6 @@ chrome.runtime.onMessage.addListener((request)=>{
 		value[lastIdx].left = Date.now();
 		let JSONvalue = JSON.stringify(value);
 		localStorage.setItem(key, JSONvalue);
-
 	}
 
 	/*Returns the necessory details when someone newly joins the meeting*/
@@ -129,21 +132,14 @@ chrome.runtime.onMessage.addListener((request)=>{
 		let JSONvalue = JSON.stringify(value);
 		console.log(JSONvalue);
 		return JSONvalue;
-
 	}
 	/*Returns the actual key by converting it from a given Raw Key*/
 	function getKey(rawKey) {
-		let key = rawKey; 
+		let key = rawKey;
 		//do some processing
 		return key;
 	}
 	function getData() {
-		return {"joined" : Date.now(), "left" : null};
+		return { joined: Date.now(), left: null };
 	}
-	
-
-})
-
-
-
-
+});
