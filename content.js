@@ -34,9 +34,8 @@ chrome.runtime.onMessage.addListener((request)=>{
 		console.log("Set : ", leftList);
 
 		if(numberOfRejoins > 0) {
-			updateRejoins(numberOfRejoins)
+			updateRejoins(numberOfRejoins);
 		}
-		
 		
 		
 
@@ -45,8 +44,6 @@ chrome.runtime.onMessage.addListener((request)=>{
 	function handleLeave(nameList, howManyLeft) {
 		let found = false;
 		console.log("howManyLeft", howManyLeft);
-
-
 
 		for(let i = 0;i < localStorage.length && howManyLeft;i++) {
 			let key = localStorage.key(i);
@@ -72,6 +69,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 	}
 
 	function updateRejoins(reJoins) {
+		console.log("Updating Rejoins");
 		for(let i = 0;i < leftList.length && reJoins;i++) {
 			let key = localStorage.key(i);
 			let value = localStorage.getItem(key);
@@ -81,6 +79,7 @@ chrome.runtime.onMessage.addListener((request)=>{
 				reJoins--;
 				value.push(getData());
 				value = JSON.stringify(value);
+				console.log("new value", value);
 				localStorage.setItem(key, value);
 			}
 		}
