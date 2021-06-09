@@ -1,7 +1,12 @@
-chrome.runtime.onMessage.addListener((request)=>{
-
-
-	const path = location.path;
+chrome.runtime.onMessage.addListener((request, sender, sendResponse)=>{
+	
+	if(request === '3') {
+		const localStorageSnap = prepareData();
+		sendResponse(localStorageSnap);
+	} 
+	sendResponse();
+		
+	const path = location.pathname;
 	const element = document.getElementsByClassName('wnPUne N0PJ8e');
 	const clicker = document.getElementsByClassName('uArJ5e UQuaGc kCyAyd QU4Gid foXzLb IeuGXd')[0];
 	clicker.click();
@@ -146,6 +151,18 @@ chrome.runtime.onMessage.addListener((request)=>{
 		return {"joined" : Date.now(), "left" : null};
 	}
 	
-
+	function prepareData() {
+		let excelSheetData = [];
+		for(let i = 0;i < localStorage.length;i++) {
+			let key = localStorage.key(i);
+			console.log(key);
+			excelSheetData.push([key]);
+		}
+		excelSheetData = JSON.stringify(excelSheetData);
+		let jsonObj = {data: excelSheetData};
+		jsonObj = JSON.stringify(jsonObj);
+		console.log(jsonObj);
+		return jsonObj;
+}
 
 });
