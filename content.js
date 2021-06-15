@@ -1,7 +1,8 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request === "3") {
-		const localStorageSnap = prepareExcelSheetData();
-		sendResponse(localStorageSnap);
+		const attendancePayload = prepareExcelSheetData();
+		sendResponse(attendancePayload);
+		return;
 	} else sendResponse();
 
 	const clicker = document.getElementsByClassName(

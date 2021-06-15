@@ -44,7 +44,7 @@ function updateLeftPerson(key) {
 function newRecord() {
 	let value = getMeetingId();
 	//value.push(getData());
-	let JSONvalue = JSON.stringify(value);
+	let JSONvalue = value;
 	console.log(JSONvalue);
 	return JSONvalue;
 }

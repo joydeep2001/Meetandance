@@ -18,32 +18,34 @@ function getData() {
 
 function prepareExcelSheetData() {
 	let excelSheetData = [];
-	const meetingId = getMeetingId();
+	const meetingId = localStorage.getItem('meetId');
+	//if(meetingId == null) return JSON.stringify({});
 	for (let i = 0; i < getNumberOfParticipents(); i++) {
 		let key = getParticipentKey(i);
 		if (getValuefromLocalStorage(key) === meetingId) {
 			console.log(key);
-			excelSheetData.push([key]);
+			excelSheetData.push(key);
 		}
 	}
 	excelSheetData = JSON.stringify(excelSheetData);
-	let jsonObj = { data: excelSheetData };
-	jsonObj = JSON.stringify(jsonObj);
-	console.log(jsonObj);
-	return jsonObj;
+	let excelSheetObj = { data: excelSheetData };
+	console.log(excelSheetObj);
+	return excelSheetObj;
 }
 /*Returns the actual key by converting it from a given Raw Key*/
 function getKey(rawKey) {
 	let key = rawKey;
 	//do some processing
-	return key;
+	
+	return key.toLowerCase();
 }
 
 function getMeetingId() {
 	const re = /[^\/].+/gi;
 	const pathname = location.pathname;
 	let meetingId = pathname.match(re);
-	return meetingId.toString();
+	console.log(meetingId);
+	return meetingId[0];
 }
 
 function initLocalStorage() {
@@ -67,4 +69,11 @@ function getParticipentKey(i) {
 }
 function getValuefromLocalStorage(key) {
 	return localStorage.getItem(key);
+}
+function getSheetIdFromURL () {
+	const pattern = /(d\/)(.+)(\/)/i;
+	const capturingGroups = sheetURL.value.match(pattern);
+	const sheetId = capturingGroups[2];
+	console.log(sheetId);
+	return sheetId;
 }
