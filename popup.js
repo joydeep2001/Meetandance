@@ -62,7 +62,7 @@ document.addEventListener(
 			const requestURL =
 				"https://guarded-island-80077.herokuapp.com/submit";
 			const requestURL_local = "http://localhost:3000/submit";
-			xhr.open("POST", requestURL_local, true);
+			xhr.open("POST", requestURL, true);
 			xhr.setRequestHeader("Content-Type", "application/json");
 			xhr.send(attendancePayload);
 		}

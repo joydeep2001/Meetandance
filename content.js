@@ -4,12 +4,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 		sendResponse(attendancePayload);
 		return;
 	} else sendResponse();
-
+	//VfPpkd-Bz112c-Jh9lGc
 	const clicker = document.getElementsByClassName(
-		"uArJ5e UQuaGc kCyAyd QU4Gid foXzLb IeuGXd"
-	)[0];
+		"VfPpkd-Bz112c-LgbsSe yHy1rc eT1oJ JsuyRc boDUxc"
+	)[1];
 	clicker.click();
-	const element = document.getElementsByClassName("wnPUne N0PJ8e");
+	const element = document.getElementsByClassName("uGOf1d");
 
 	let leftList = new Set();
 	let prevCount = 0;

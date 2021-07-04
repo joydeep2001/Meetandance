@@ -79,12 +79,10 @@ async function sendReqToGS(payload) {
 				return;
 			}
 			console.log("connected");
-			//const columNumber = 'D';
-			//payload.data = getPresentAbsentList(payload.data);
-			//const newPayload = await saveToGs(client, payload, columNumber, 5);
-			//const finalRes = await saveToGs(client, newPayload, 'B', '12');
-			const newPayload = await appendCol(client, payload, "D");
-			resolve(newPayload);
+			const columNumber = 'D';
+			payload.data = getPresentAbsentList(payload.data);
+			const finalRes = await saveToGs(client, payload, columNumber, 5);
+			resolve(finalRes);
 		});
 	});
 }
@@ -107,11 +105,12 @@ async function saveToGs(client, payload, columNumber, row) {
 		console.log("line 68 ", columNumber);
 		const [[col]] = columNumber;
 		console.log("col ", col);
+		console.log(payload.data);
 		const updateCred = {
 			spreadsheetId: id,
 			range: `Attendance Sheet!${col}${row}`,
 			valueInputOption: "USER_ENTERED",
-			resource: { values: JOSN.parse(payload.data) },
+			resource: { values: JSON.parse(payload.data) },
 		};
 		const response = await gsapi.spreadsheets.values.update(updateCred);
 		resolve(response);
