@@ -18,7 +18,7 @@ function getData() {
 
 function prepareExcelSheetData() {
 	let excelSheetData = [];
-	const meetingId = localStorage.getItem('meetId');
+	const meetingId = localStorage.getItem("meetId");
 	//if(meetingId == null) return JSON.stringify({});
 	for (let i = 0; i < getNumberOfParticipents(); i++) {
 		let key = getParticipentKey(i);
@@ -36,7 +36,7 @@ function prepareExcelSheetData() {
 function getKey(rawKey) {
 	let key = rawKey;
 	//do some processing
-	
+
 	return key.toLowerCase();
 }
 
@@ -70,7 +70,7 @@ function getParticipentKey(i) {
 function getValuefromLocalStorage(key) {
 	return localStorage.getItem(key);
 }
-function getSheetIdFromURL () {
+function getSheetIdFromURL() {
 	const pattern = /(d\/)(.+)(\/)/i;
 	const capturingGroups = sheetURL.value.match(pattern);
 	const sheetId = capturingGroups[2];
